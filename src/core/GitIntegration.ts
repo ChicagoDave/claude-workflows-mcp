@@ -217,6 +217,40 @@ export class GitIntegration {
     };
   }
 
+  async captureState(): Promise<any> {
+    const status = await this.getStatus();
+    const branch = await this.getCurrentBranch();
+    const recentCommits = await this.getRecentCommits(10);
+    
+    // Get raw git status for more detail
+    let rawStatus = '';
+    if (this.isGitRepo) {
+      try {
+        const gitStatus = await this.git.status();
+        rawStatus = gitStatus.isClean() ? 'nothing to commit, working tree clean' : 
+                    `${gitStatus.modified.length + gitStatus.not_added.length} files changed`;
+      } catch (error) {
+        console.error('Error getting raw status:', error);
+      }
+    }
+
+    return {
+      branch: branch || 'unknown',
+      status: rawStatus,
+      recentCommits: recentCommits.map(commit => {
+        const parts = commit.split(' - ');
+        return {
+          hash: parts[0],
+          date: parts[1],
+          message: parts[2]
+        };
+      }),
+      isDirty: status ? (status.modified.length > 0 || status.untracked.length > 0) : false,
+      modifiedFiles: status?.modified || [],
+      untrackedFiles: status?.untracked || []
+    };
+  }
+
   isAvailable(): boolean {
     return this.isGitRepo;
   }

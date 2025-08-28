@@ -18,7 +18,15 @@ export class NumberingSystem {
     this.registryPath = join(Config.getWorkflowStateDirectory(), 'numbering.json');
   }
 
-  static async getInstance(): Promise<NumberingSystem> {
+  static getInstance(): NumberingSystem {
+    if (!NumberingSystem.instance) {
+      NumberingSystem.instance = new NumberingSystem();
+      // Load will be called separately if needed
+    }
+    return NumberingSystem.instance;
+  }
+  
+  static async getInstanceAsync(): Promise<NumberingSystem> {
     if (!NumberingSystem.instance) {
       NumberingSystem.instance = new NumberingSystem();
       await NumberingSystem.instance.load();
@@ -48,7 +56,7 @@ export class NumberingSystem {
     await writeFile(this.registryPath, content, 'utf-8');
   }
 
-  async getNextNumber(prefix: string): Promise<string> {
+  async getNextNumber(prefix: string): Promise<number> {
     // Wait if this prefix is currently locked
     while (this.locked.has(prefix)) {
       await new Promise((resolve) => setTimeout(resolve, 50));
@@ -63,10 +71,18 @@ export class NumberingSystem {
       this.registry[prefix] = nextNumber;
       await this.save();
       
-      return this.formatNumber(nextNumber);
+      return nextNumber;
     } finally {
       this.locked.delete(prefix);
     }
+  }
+  
+  getNextNumberSync(prefix: string): number {
+    const currentNumber = this.registry[prefix] || 0;
+    const nextNumber = currentNumber + 1;
+    this.registry[prefix] = nextNumber;
+    // Note: This doesn't save, caller must handle persistence
+    return nextNumber;
   }
 
   async reserveNumber(prefix: string, number: number): Promise<void> {

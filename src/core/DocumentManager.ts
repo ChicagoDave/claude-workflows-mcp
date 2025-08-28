@@ -52,6 +52,35 @@ export class DocumentManager {
     await writeFile(fullPath, content, 'utf-8');
   }
 
+  async create(path: string, content: string): Promise<void> {
+    const fullPath = this.getFullPath(path);
+    const dir = dirname(fullPath);
+
+    // Ensure directory exists
+    if (!existsSync(dir)) {
+      await mkdir(dir, { recursive: true });
+    }
+
+    // Write the content directly
+    await writeFile(fullPath, content, 'utf-8');
+  }
+
+  async update(path: string, updates: { frontmatter?: any; content?: string }): Promise<void> {
+    const doc = await this.read(path);
+    
+    // Update metadata/frontmatter if provided
+    if (updates.frontmatter) {
+      doc.metadata = { ...doc.metadata, ...updates.frontmatter };
+    }
+    
+    // Update content if provided
+    if (updates.content !== undefined) {
+      doc.content = updates.content;
+    }
+    
+    await this.write(path, doc);
+  }
+
   async createBackup(path: string): Promise<string> {
     const fullPath = this.getFullPath(path);
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -71,14 +100,30 @@ export class DocumentManager {
     await unlink(fullPath);
   }
 
-  async list(pattern: string): Promise<string[]> {
+  async list(pattern: string): Promise<any[]> {
     const fullPattern = this.getFullPath(pattern);
     const files = await glob(fullPattern, {
       nodir: true,
       ignore: ['**/*.backup.*'],
     });
 
-    return files.map((file) => file.replace(this.basePath + '/', ''));
+    const documents = [];
+    for (const file of files) {
+      try {
+        const relativePath = file.replace(this.basePath + '/', '');
+        const content = await readFile(file, 'utf-8');
+        const parsed = matter(content);
+        documents.push({
+          path: relativePath,
+          frontmatter: parsed.data,
+          content: parsed.content
+        });
+      } catch (error) {
+        console.error(`Error reading ${file}:`, error);
+      }
+    }
+    
+    return documents;
   }
 
   async listDocuments(pattern: string): Promise<Document[]> {

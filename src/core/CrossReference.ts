@@ -22,7 +22,15 @@ export class CrossReferenceSystem {
     this.registryPath = join(Config.getWorkflowStateDirectory(), 'references.json');
   }
 
-  static async getInstance(): Promise<CrossReferenceSystem> {
+  static getInstance(): CrossReferenceSystem {
+    if (!CrossReferenceSystem.instance) {
+      CrossReferenceSystem.instance = new CrossReferenceSystem();
+      // Load will be called separately if needed
+    }
+    return CrossReferenceSystem.instance;
+  }
+
+  static async getInstanceAsync(): Promise<CrossReferenceSystem> {
     if (!CrossReferenceSystem.instance) {
       CrossReferenceSystem.instance = new CrossReferenceSystem();
       await CrossReferenceSystem.instance.load();
@@ -71,6 +79,20 @@ export class CrossReferenceSystem {
       this.registry.references[existing] = reference;
       await this.save();
     }
+  }
+
+  async addRelationship(from: string, to: string, type: 'references' | 'supersedes' | 'implements' | 'relates_to', description?: string): Promise<void> {
+    const reference: CrossReference = {
+      from,
+      to,
+      type,
+      description
+    };
+    await this.addReference(reference);
+  }
+
+  async getRelationships(documentId: string): Promise<CrossReference[]> {
+    return await this.getReferences(documentId, 'both');
   }
 
   async removeReference(from: string, to: string, type?: string): Promise<void> {

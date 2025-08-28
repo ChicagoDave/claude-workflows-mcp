@@ -12,6 +12,7 @@ export interface Document {
   path: string;
   content: string;
   metadata: DocumentMetadata;
+  frontmatter?: any;  // Add frontmatter for compatibility with workflows
 }
 
 export interface ADRDocument extends Document {
@@ -111,6 +112,65 @@ export interface TemplateData {
 }
 
 export type WorkflowType = 'adr' | 'session' | 'planning' | 'design' | 'standards' | 'refactoring';
+
+export type ADRStatus = 'proposed' | 'accepted' | 'rejected' | 'deprecated' | 'superseded';
+export type RefactorType = 'optimization' | 'restructure' | 'extraction' | 'simplification' | 'pattern';
+export type RefactorScope = 'minor' | 'major' | 'architectural';
+
+export interface WorkflowResult {
+  success: boolean;
+  message?: string;
+  error?: string;
+  data?: any;
+}
+
+export interface ChecklistItem {
+  id?: string;
+  text: string;
+  completed: boolean;
+  category?: string;
+  notes?: string;
+  completedAt?: string | null;
+  completedBy?: string | null;
+}
+
+export interface DesignOption {
+  name: string;
+  description: string;
+  pros?: string[];
+  cons?: string[];
+  scores?: Record<string, number>;
+  totalScore?: number;
+  evaluationNotes?: string;
+}
+
+export interface EvaluationCriteria {
+  name: string;
+  weight: number;
+  description?: string;
+}
+
+export interface ImplementationPhase {
+  name: string;
+  description?: string;
+  number?: number;
+  status?: 'not-started' | 'in-progress' | 'completed' | 'blocked';
+  tasks?: string[];
+  dependencies?: string[];
+  estimatedDuration?: string;
+  completedTasks?: number;
+  totalTasks?: number;
+  progress?: number;
+  notes?: string;
+}
+
+export interface Milestone {
+  name: string;
+  targetDate: string;
+  status?: 'pending' | 'completed' | 'missed';
+  completedDate?: string;
+  criteria?: string[];
+}
 
 export interface WorkflowTool {
   name: string;

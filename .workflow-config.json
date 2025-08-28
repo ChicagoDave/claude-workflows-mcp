@@ -1,0 +1,14 @@
+{
+  "paths": {
+    "adrs": "docs/architecture/adrs",
+    "sessions": "docs/context",
+    "discussions": "docs/discussions",
+    "standards": "docs/standards",
+    "work": "docs/work"
+  },
+  "defaults": {
+    "author": "cornelsond",
+    "deciders": []
+  },
+  "templates": {}
+}

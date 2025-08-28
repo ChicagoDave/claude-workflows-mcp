@@ -2,7 +2,7 @@ import { DocumentManager } from '../core/DocumentManager.js';
 import { TemplateEngine } from '../core/TemplateEngine.js';
 import { NumberingSystem } from '../core/NumberingSystem.js';
 import { Config } from '../core/Config.js';
-import { Document, WorkflowType, WorkflowState } from '../types/index.js';
+import { Document, WorkflowState } from '../types/index.js';
 import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -10,16 +10,19 @@ import { existsSync } from 'fs';
 export abstract class BaseWorkflow {
   protected documentManager: DocumentManager;
   protected templateEngine: TemplateEngine;
-  protected numberingSystem: NumberingSystem | null = null;
+  protected numberingSystem: NumberingSystem;
   protected config: Config;
-  protected workflowType: WorkflowType;
+  protected workflowType: string;
+  protected templateName: string;
   protected state: WorkflowState | null = null;
 
-  constructor(workflowType: WorkflowType) {
+  constructor(workflowType: string, templateName: string) {
     this.workflowType = workflowType;
+    this.templateName = templateName;
     this.documentManager = new DocumentManager();
     this.templateEngine = TemplateEngine.getInstance();
     this.config = Config.getDefault();
+    this.numberingSystem = NumberingSystem.getInstance();
   }
 
   async initialize(): Promise<void> {
@@ -29,16 +32,29 @@ export abstract class BaseWorkflow {
     // Ensure necessary directories exist
     await this.config.ensurePaths();
     
-    // Initialize numbering system
-    this.numberingSystem = await NumberingSystem.getInstance();
-    
     // Load workflow state if exists
     await this.loadState();
   }
 
-  protected abstract getDefaultPath(): string;
-  protected abstract getTemplatePrefix(): string;
-  protected abstract validateInput(input: any): void;
+  protected getDocumentPath(type: string): string {
+    // Get document path from config based on type
+    const paths = this.config.getConfig().paths;
+    switch (type) {
+      case 'adr':
+        return paths.adrs;
+      case 'session':
+      case 'context':
+        return paths.sessions;
+      case 'design':
+        return paths.discussions;
+      case 'plan':
+      case 'checklist':
+      case 'refactor':
+        return paths.work;
+      default:
+        return paths.work;
+    }
+  }
 
   protected async loadState(): Promise<void> {
     const statePath = this.getStatePath();
@@ -72,22 +88,12 @@ export abstract class BaseWorkflow {
     return join(Config.getWorkflowStateDirectory(), `${this.workflowType}.state.json`);
   }
 
-  protected async generateDocumentNumber(): Promise<string> {
-    if (!this.numberingSystem) {
-      throw new Error('Numbering system not initialized');
-    }
-    
-    const prefix = this.getTemplatePrefix();
-    return await this.numberingSystem.getNextNumber(prefix);
+  protected async generateDocumentNumber(type: string): Promise<number> {
+    return await this.numberingSystem.getNextNumber(type);
   }
 
-  protected generateFilename(number: string, title: string): string {
-    if (!this.numberingSystem) {
-      throw new Error('Numbering system not initialized');
-    }
-    
-    const prefix = this.getTemplatePrefix();
-    return this.numberingSystem.generateFilename(prefix, number, title);
+  protected generateFilename(number: number, title: string, prefix: string): string {
+    return this.numberingSystem.generateFilename(prefix, number.toString(), title);
   }
 
   protected async createDocument(
@@ -99,8 +105,8 @@ export abstract class BaseWorkflow {
     const content = await this.templateEngine.render(templateName, data);
     
     // Determine file path
-    const path = filename || this.generateFilename(data.number, data.title);
-    const fullPath = join(this.getDefaultPath(), path);
+    const path = filename || this.generateFilename(data.number, data.title, this.workflowType);
+    const fullPath = join(this.getDocumentPath(this.workflowType), path);
 
     // Create document
     const document: Document = {
@@ -127,7 +133,7 @@ export abstract class BaseWorkflow {
   }
 
   protected async listDocuments(pattern?: string): Promise<Document[]> {
-    const searchPattern = pattern || join(this.getDefaultPath(), '*.md');
+    const searchPattern = pattern || join(this.getDocumentPath(this.workflowType), '*.md');
     return await this.documentManager.listDocuments(searchPattern);
   }
 
@@ -191,6 +197,4 @@ export abstract class BaseWorkflow {
     }
     return JSON.stringify(data, null, 2);
   }
-
-  abstract execute(action: string, params: any): Promise<any>;
 }
