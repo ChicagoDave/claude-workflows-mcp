@@ -1,0 +1,167 @@
+# Refactoring Specification: {{title}}
+
+Date: {{date}}
+Author: {{author}}
+
+## Summary
+
+{{summary}}
+
+## Current State Analysis
+
+### Problems Identified
+
+{{#each problems}}
+{{@index}}. **{{this.title}}**
+   - Description: {{this.description}}
+   - Impact: {{this.impact}}
+   - Files affected: {{join this.files ", "}}
+{{/each}}
+
+### Code Smells
+
+{{#if codeSmells}}
+{{#each codeSmells}}
+- **{{this.type}}**: {{this.description}} in `{{this.location}}`
+{{/each}}
+{{else}}
+See problems identified above.
+{{/if}}
+
+## Proposed Solution
+
+### Refactoring Strategy
+
+{{strategy}}
+
+### Specific Changes
+
+{{#each changes}}
+#### {{this.component}}
+
+**Current Implementation:**
+```{{this.language}}
+{{this.before}}
+```
+
+**Proposed Implementation:**
+```{{this.language}}
+{{this.after}}
+```
+
+**Rationale:** {{this.rationale}}
+
+{{/each}}
+
+## Impact Analysis
+
+### Components Affected
+
+{{#each impactedComponents}}
+- **{{this.name}}**: {{this.impact}}
+{{/each}}
+
+### API Changes
+
+{{#if apiChanges}}
+{{#each apiChanges}}
+- {{this.description}}
+{{/each}}
+{{else}}
+No API changes required.
+{{/if}}
+
+### Migration Requirements
+
+{{#if migrations}}
+{{#each migrations}}
+{{@index}}. {{this}}
+{{/each}}
+{{else}}
+No data migrations required.
+{{/if}}
+
+## Implementation Plan
+
+### Phase 1: Preparation
+{{#each preparationSteps}}
+- [ ] {{this}}
+{{/each}}
+
+### Phase 2: Core Refactoring
+{{#each refactoringSteps}}
+- [ ] {{this}}
+{{/each}}
+
+### Phase 3: Testing & Validation
+{{#each testingSteps}}
+- [ ] {{this}}
+{{/each}}
+
+### Phase 4: Deployment
+{{#each deploymentSteps}}
+- [ ] {{this}}
+{{/each}}
+
+## Testing Strategy
+
+### Unit Tests
+{{#each unitTests}}
+- {{this}}
+{{/each}}
+
+### Integration Tests
+{{#each integrationTests}}
+- {{this}}
+{{/each}}
+
+### Performance Tests
+{{#if performanceTests}}
+{{#each performanceTests}}
+- {{this}}
+{{/each}}
+{{else}}
+No performance testing required.
+{{/if}}
+
+## Rollback Plan
+
+{{#if rollbackPlan}}
+{{rollbackPlan}}
+{{else}}
+1. Revert to previous commit
+2. Restore database backup if applicable
+3. Clear caches
+4. Verify system functionality
+{{/if}}
+
+## Success Metrics
+
+{{#each metrics}}
+- **{{this.name}}**: {{this.target}}
+{{/each}}
+
+## Risks and Mitigations
+
+| Risk | Probability | Impact | Mitigation |
+| --- | --- | --- | --- |
+{{#each risks}}
+| {{this.description}} | {{this.probability}} | {{this.impact}} | {{this.mitigation}} |
+{{/each}}
+
+## Review Checklist
+
+- [ ] All tests passing
+- [ ] Performance benchmarks met
+- [ ] Documentation updated
+- [ ] Code review completed
+- [ ] Deployment plan approved
+- [ ] Rollback plan tested
+
+## Notes
+
+{{#if notes}}
+{{notes}}
+{{else}}
+No additional notes.
+{{/if}}

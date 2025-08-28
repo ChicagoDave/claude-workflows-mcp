@@ -1,0 +1,41 @@
+{
+  "name": "claude-workflows-mcp",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write 'src/**/*.ts'",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["mcp", "claude", "workflows", "adr", "development"],
+  "author": "",
+  "license": "MIT",
+  "description": "Model Context Protocol server for Claude development workflows",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "glob": "^11.0.3",
+    "gray-matter": "^4.0.3",
+    "handlebars": "^4.7.8",
+    "simple-git": "^3.28.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

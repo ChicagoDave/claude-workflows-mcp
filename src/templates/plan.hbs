@@ -1,0 +1,92 @@
+# Implementation Plan: {{title}}
+
+Date: {{date}}
+
+## Executive Summary
+
+{{summary}}
+
+## Goals & Objectives
+
+{{#each goals}}
+- {{this}}
+{{/each}}
+
+## Phases
+
+{{#each phases}}
+### Phase {{this.number}}: {{this.title}}
+
+**Duration**: {{this.duration}}
+**Status**: {{this.status}}
+
+#### Objectives
+{{#each this.objectives}}
+- {{this}}
+{{/each}}
+
+#### Tasks
+{{#each this.tasks}}
+- [ ] {{this}}
+{{/each}}
+
+#### Success Criteria
+{{#each this.successCriteria}}
+- {{this}}
+{{/each}}
+
+{{#if this.dependencies}}
+#### Dependencies
+{{#each this.dependencies}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{/each}}
+
+## Timeline
+
+| Phase | Start Date | End Date | Duration | Status |
+| --- | --- | --- | --- | --- |
+{{#each phases}}
+| Phase {{this.number}}: {{this.title}} | {{this.startDate}} | {{this.endDate}} | {{this.duration}} | {{this.status}} |
+{{/each}}
+
+## Resources Required
+
+{{#if resources}}
+{{#each resources}}
+### {{this.category}}
+{{#each this.items}}
+- {{this}}
+{{/each}}
+{{/each}}
+{{else}}
+To be determined.
+{{/if}}
+
+## Risk Assessment
+
+{{#if risks}}
+| Risk | Probability | Impact | Mitigation |
+| --- | --- | --- | --- |
+{{#each risks}}
+| {{this.description}} | {{this.probability}} | {{this.impact}} | {{this.mitigation}} |
+{{/each}}
+{{else}}
+No significant risks identified.
+{{/if}}
+
+## Success Metrics
+
+{{#each metrics}}
+- **{{this.name}}**: {{this.target}}
+{{/each}}
+
+## Notes
+
+{{#if notes}}
+{{notes}}
+{{else}}
+No additional notes.
+{{/if}}

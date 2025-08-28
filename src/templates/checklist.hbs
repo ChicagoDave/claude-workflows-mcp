@@ -1,0 +1,69 @@
+# Checklist: {{title}}
+
+**Phase**: {{phase}}
+**Date Created**: {{date}}
+**Status**: {{status}}
+
+## Overview
+
+{{overview}}
+
+## Pre-requisites
+
+{{#if prerequisites}}
+{{#each prerequisites}}
+- [ ] {{this}}
+{{/each}}
+{{else}}
+None
+{{/if}}
+
+## Tasks
+
+{{#each sections}}
+### {{this.title}}
+
+{{#each this.tasks}}
+- [ ] {{this.description}}{{#if this.notes}}
+  - {{this.notes}}{{/if}}
+{{/each}}
+
+{{/each}}
+
+## Validation & Testing
+
+{{#each validation}}
+- [ ] {{this}}
+{{/each}}
+
+## Commit Checkpoints
+
+{{#if commits}}
+{{#each commits}}
+{{@index}}. **Commit {{this.number}}**: "{{this.message}}"
+{{/each}}
+{{else}}
+Regular commits recommended at logical completion points.
+{{/if}}
+
+## Success Criteria
+
+{{#each successCriteria}}
+- [ ] {{this}}
+{{/each}}
+
+## Post-Completion Review
+
+{{#each review}}
+- [ ] {{this}}
+{{/each}}
+
+## Notes
+
+{{#if notes}}
+{{notes}}
+{{else}}
+- Focus on completing tasks in order where dependencies exist
+- Regular testing throughout the phase is recommended
+- Document any deviations or issues encountered
+{{/if}}

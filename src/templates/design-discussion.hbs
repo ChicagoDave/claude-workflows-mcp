@@ -1,0 +1,85 @@
+# Design Discussion: {{title}}
+
+Date: {{date}}
+
+## Overview
+
+{{overview}}
+
+## Options Under Consideration
+
+{{#each options}}
+### Option {{@index}}: {{this.name}}
+
+{{this.description}}
+
+**Pros:**
+{{#each this.pros}}
+- {{this}}
+{{/each}}
+
+**Cons:**
+{{#each this.cons}}
+- {{this}}
+{{/each}}
+
+{{/each}}
+
+## Evaluation Criteria
+
+{{#each criteria}}
+### {{@index}}. {{this.name}} (Weight: {{this.weight}})
+{{this.description}}
+{{/each}}
+
+## Evaluation Matrix
+
+| Option | {{#each criteria}}{{this.name}} | {{/each}}Total Score |
+| --- | {{#each criteria}}--- | {{/each}}--- |
+{{#each options}}
+| {{this.name}} | {{#each ../criteria}}{{harveyBall this.score}} | {{/each}}{{this.totalScore}} |
+{{/each}}
+
+## Weighted Scores
+
+| Option | {{#each criteria}}{{this.name}} ({{this.weight}}) | {{/each}}Weighted Total |
+| --- | {{#each criteria}}--- | {{/each}}--- |
+{{#each options}}
+| {{this.name}} | {{#each this.scores}}{{this}} | {{/each}}{{this.weightedTotal}} |
+{{/each}}
+
+## Recommendation
+
+{{#if recommendation}}
+**Recommended Option**: {{recommendation.option}}
+
+### Rationale
+{{recommendation.rationale}}
+
+### Implementation Considerations
+{{#each recommendation.considerations}}
+- {{this}}
+{{/each}}
+{{else}}
+Further analysis needed before making a recommendation.
+{{/if}}
+
+## Risks and Mitigations
+
+{{#each risks}}
+### {{this.option}}
+**Risk**: {{this.risk}}
+**Mitigation**: {{this.mitigation}}
+{{/each}}
+
+## Next Steps
+
+{{#each nextSteps}}
+{{@index}}. {{this}}
+{{/each}}
+
+## Participants
+
+{{#each participants}}
+- {{this}}
+{{/each}}

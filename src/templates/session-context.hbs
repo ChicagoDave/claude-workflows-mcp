@@ -1,0 +1,95 @@
+# Session Context: {{date}} {{time}}
+
+## Session Summary
+
+{{summary}}
+
+## Work Completed
+
+{{#if workCompleted}}
+{{#each workCompleted}}
+- {{this}}
+{{/each}}
+{{else}}
+- No specific items documented
+{{/if}}
+
+## Key Decisions & Discoveries
+
+{{#if decisions}}
+{{#each decisions}}
+### {{this.title}}
+{{this.description}}
+{{/each}}
+{{else}}
+No major decisions made this session.
+{{/if}}
+
+## Modified Files
+
+{{#if modifiedFiles}}
+```
+{{#each modifiedFiles}}
+{{this}}
+{{/each}}
+```
+{{else}}
+No files modified during this session.
+{{/if}}
+
+## Current State
+
+### Git Status
+```bash
+Branch: {{gitBranch}}
+{{gitStatus}}
+```
+
+{{#if recentCommits}}
+### Recent Commits
+{{#each recentCommits}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+## Next Session Starting Point
+
+{{#if nextSteps}}
+### Immediate Actions
+{{#each nextSteps}}
+{{@index}}. {{this}}
+{{/each}}
+{{else}}
+Continue with planned work.
+{{/if}}
+
+{{#if blockers}}
+### Blockers
+{{#each blockers}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+## Questions for Next Session
+
+{{#if questions}}
+{{#each questions}}
+- [ ] {{this}}
+{{/each}}
+{{else}}
+No open questions.
+{{/if}}
+
+## Session Metrics
+
+- **Duration**: {{duration}}
+- **Files Modified**: {{fileCount}}
+- **Commits Made**: {{commitCount}}
+
+## Notes & Observations
+
+{{#if notes}}
+{{notes}}
+{{else}}
+No additional notes for this session.
+{{/if}}
