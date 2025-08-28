@@ -13,7 +13,7 @@ export class TemplateEngine {
   private constructor() {
     this.handlebars = Handlebars.create();
     this.templateCache = new Map();
-    this.templatesPath = join(process.cwd(), 'src', 'templates');
+    this.templatesPath = join(__dirname, '..', 'templates');
     this.registerHelpers();
   }
 
